@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+  <title>NW.js Demo</title>
+  <style>
+    body {
+      background-color: #000;
+    }
+    .box {
+      float: right;
+      width: 50px;
+      height: 50px;
+      background-color: pink;
+      transition: width 1s;
+    }
+    .box:hover {
+      width: 200px;
+    }
+  </style>
+</head>
+<body onmouseover="expand()" onmouseout="collapse()">
+  <div class="box" id="draggable">doctor</div>
+  <script>
+    // 使用node.js获取系统信息
+    // var os = require('os');
+    // document.write('您当前系统为 ', os.platform());
+
+    //  获取窗口对象
+    let win = nw.Window.get();
+    // 获取屏幕尺寸
+    let screen = nw.Screen.screens[0];
+    let screenWidth = screen.bounds.width;
+    let screenHeight = screen.bounds.height;
+
+    // 计算窗口的目标位置
+    let windowWidth = 70;  // 更改为你的窗口宽度
+    let windowHeight = 70;  // 更改为你的窗口高度
+    let targetX = screenWidth - windowWidth;
+    let targetY = screenHeight - windowHeight - 300;
+
+    // 窗口初始位置
+    nw.Window.get().moveTo(targetX, targetY);
+
+
+    // -----拖拽------
+    let dragging = false;
+    let startX = 0, startY = 0;
+
+    document.getElementById('draggable').addEventListener('mousedown', (event) => {
+      dragging = true;
+      startX = event.screenX - win.x;
+      startY = event.screenY - win.y;
+    });
+
+    document.addEventListener('mousemove', (event) => {
+      if (!dragging) return;
+      win.moveTo(event.screenX - startX, event.screenY - startY);
+    });
+
+    document.addEventListener('mouseup', () => {
+      dragging = false;
+    });
+
+    // -----鼠标经过时展开-----
+    // 记录窗口的初始位置和大小
+    // let originalX = nw.Window.get().x;
+    // let originalWidth = nw.Window.get().width;
+
+    // function expand() {
+    //   // 计算新的窗口位置和大小
+    //   let expandedWidth = 250;  // 更改为你想要的扩展后的宽度
+    //   let expandedX = originalX - (expandedWidth - originalWidth);
+
+    //   // 改变窗口的位置和大小
+    //   nw.Window.get().moveTo(expandedX, nw.Window.get().y);
+    //   nw.Window.get().resizeTo(expandedWidth, nw.Window.get().height);
+    // }
+
+    // function collapse() {
+    //   // 恢复窗口的位置和大小
+    //   nw.Window.get().moveTo(originalX, nw.Window.get().y);
+    //   nw.Window.get().resizeTo(originalWidth, nw.Window.get().height);
+    // }
+  </script>
+  </body>
+</html>
