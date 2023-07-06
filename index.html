@@ -4,25 +4,58 @@
 <head>
   <title>NW.js Demo</title>
   <style>
-    /* body {
-      background-color: #000;
-      overflow: hidden;
-    } */
+    body {
+      user-select: none;
+    }
     .box {
-      position: absolute;
-      right: 0;
-      width: 50px;
-      height: 50px;
-      background-color: pink;
+      display: flex;
+      flex-wrap: nowrap;
+      float: right;
+      width: 80px;
+      height: 100px;
+      /* background-color: pink; */
       transition: width 1s;
+      overflow: hidden;  /* 确保在 .box 宽度变小时，.buttons 超出 .box 的部分会被隐藏 */
     }
     .box:hover {
-      width: 200px;
+      width: 250px;
+    }
+    .buttons {
+      margin-left: 5px;
+      background-color: #e7e7e7;
+      height: 40px;
+      width: 190px;
+      margin-top: 25px;
+      display: flex;
+      display: none;  /* 默认情况下隐藏按钮 */
+      overflow: hidden;
+    }
+    .buttons button {
+      margin-left: 5px;
+    }
+    .box:hover .buttons {
+      display: block;  /* 当 .box 宽度变大时显示按钮 */
+    }
+    .doctorImg {
+      display: inline-block;
+      height: 100px;
+      width: 80px;
+      -webkit-user-drag: none;  /* 禁止图片拖动 */
     }
   </style>
 </head>
 <body>
-  <div class="box" id="draggable">doctor</div>
+  <div class="box" id="draggable">
+    <img src="./img/doctor.png" alt="" class="doctorImg">
+    <!-- <span>doctor</span> -->
+    <div class="buttons" id="buttons">
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>4</button>
+      <button>5</button>
+    </div>
+  </div>
   <script>
     //  获取窗口对象
     let win = nw.Window.get();
@@ -32,8 +65,8 @@
     let screenHeight = screen.bounds.height;
 
     // 计算窗口的目标位置
-    let windowWidth = 70;  // 更改为你的窗口宽度
-    let windowHeight = 70;  // 更改为你的窗口高度
+    let windowWidth = 100;  // 更改为你的窗口宽度
+    let windowHeight = 120;  // 更改为你的窗口高度
     let targetX = screenWidth - windowWidth;
     let targetY = screenHeight - windowHeight - 300;
 
@@ -66,7 +99,7 @@
     box.addEventListener('mouseleave', function(e) {
       // 只有当 div 并非被拖拽时，才改变窗口大小和位置
       if (!dragging) {
-        windowWidth = initialWindowWidth;
+        windowWidth = 100;
         win.resizeTo(windowWidth, windowHeight);
         win.moveTo(targetX, targetY);
       }
