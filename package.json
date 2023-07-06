@@ -4,6 +4,7 @@
   "window": {
     "frame": false,
     "transparent": true,
+    "resizable": false,
     "width": 70,
     "height": 70
   }

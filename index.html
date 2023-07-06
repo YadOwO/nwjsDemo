@@ -4,11 +4,13 @@
 <head>
   <title>NW.js Demo</title>
   <style>
-    body {
+    /* body {
       background-color: #000;
-    }
+      overflow: hidden;
+    } */
     .box {
-      float: right;
+      position: absolute;
+      right: 0;
       width: 50px;
       height: 50px;
       background-color: pink;
@@ -22,10 +24,6 @@
 <body>
   <div class="box" id="draggable">doctor</div>
   <script>
-    // 使用node.js获取系统信息
-    // var os = require('os');
-    // document.write('您当前系统为 ', os.platform());
-
     //  获取窗口对象
     let win = nw.Window.get();
     // 获取屏幕尺寸
@@ -40,14 +38,41 @@
     let targetY = screenHeight - windowHeight - 300;
 
     // 窗口初始位置
-    nw.Window.get().moveTo(targetX, targetY);
+    win.moveTo(targetX, targetY);
 
+    // 获取 div 元素
+    let box = document.getElementById('draggable');
 
-    // // -----拖拽------
+    // 动态调整窗口大小以适应 div 的宽度
+    function adjustWindow() {
+      let boxWidth = box.offsetWidth;
+      if (windowWidth !== boxWidth) {
+        windowWidth = boxWidth;
+        targetX = screenWidth - windowWidth;
+        win.resizeTo(windowWidth, windowHeight);
+        win.moveTo(targetX, targetY);
+      }
+      requestAnimationFrame(adjustWindow); // requestAnimationFrame 是一个浏览器提供的 API，它会在下一个重绘之前执行回调函数。也就是说，它会使得函数 adjustWindow 在每一帧渲染的时候被调用。这对于动画和其他需要高频率更新的场景非常有用。
+    }
+
+    // 开始调整窗口大小
+    adjustWindow();
+
+    // -----拖拽------
     let dragging = false;
     let startX = 0, startY = 0;
 
-    document.getElementById('draggable').addEventListener('mousedown', (event) => {
+    // 当鼠标离开 div 时，恢复窗口的大小和位置
+    box.addEventListener('mouseleave', function(e) {
+      // 只有当 div 并非被拖拽时，才改变窗口大小和位置
+      if (!dragging) {
+        windowWidth = initialWindowWidth;
+        win.resizeTo(windowWidth, windowHeight);
+        win.moveTo(targetX, targetY);
+      }
+    });
+
+    box.addEventListener('mousedown', (event) => {
       dragging = true;
       startX = event.screenX - win.x;
       startY = event.screenY - win.y;
@@ -55,60 +80,18 @@
 
     document.addEventListener('mousemove', (event) => {
       if (!dragging) return;
-      win.moveTo(event.screenX - startX, event.screenY - startY);
+      let newX = event.screenX - startX;
+      let newY = event.screenY - startY;
+      win.moveTo(newX, newY);
+
+      // 更新目标位置
+      targetX = newX;
+      targetY = newY;
     });
 
     document.addEventListener('mouseup', () => {
       dragging = false;
     });
-
-    // -----鼠标经过时展开-----
-    // 获取 div 元素和窗口的初始尺寸
-    let box = document.getElementById('draggable');
-    let initialBoxWidth = box.offsetWidth;
-    let initialWindowWidth = windowWidth;
-    let expandedBoxWidth = 200;  // 根据你的 CSS 规则设置
-    // 使用变量记录是否正在变化
-    let isTransitioning = false;
-
-    // 当鼠标进入 div 时，扩大窗口并向左移动
-    box.addEventListener('mouseover', function(e) {
-      // 如果已经在变化，直接返回
-      if (isTransitioning) return;
-
-      isTransitioning = true;
-
-      windowWidth = initialWindowWidth + (expandedBoxWidth - initialBoxWidth);
-      targetX = screenWidth - windowWidth;
-      win.resizeTo(windowWidth, windowHeight);
-      win.moveTo(targetX, targetY);
-
-      // 变化完成后，设置 isTransitioning 为 false
-      isTransitioning = false;
-
-      console.log('jinruYado')
-    });
-
-    // 当鼠标离开 div 时，恢复窗口的大小和位置
-
-    box.addEventListener('mouseleave', function(e) {
-      console.log('leaveYado')
-    })
-
-    // box.addEventListener('transitionend', function(e) {
-    //   if (!isTransitioning) return;
-      
-    //   windowWidth = initialWindowWidth;
-    //   targetX = screenWidth - windowWidth;
-    //   win.resizeTo(windowWidth, windowHeight);
-    //   win.moveTo(targetX, targetY);
-
-    //   // 变化完成后，设置 isTransitioning 为 false
-    //   isTransitioning = false;
-
-    //   console.log('likaiYado');
-    // });
-
   </script>
-  </body>
+</body>
 </html>
