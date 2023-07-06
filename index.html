@@ -19,7 +19,7 @@
     }
   </style>
 </head>
-<body onmouseover="expand()" onmouseout="collapse()">
+<body>
   <div class="box" id="draggable">doctor</div>
   <script>
     // 使用node.js获取系统信息
@@ -43,7 +43,7 @@
     nw.Window.get().moveTo(targetX, targetY);
 
 
-    // -----拖拽------
+    // // -----拖拽------
     let dragging = false;
     let startX = 0, startY = 0;
 
@@ -63,25 +63,52 @@
     });
 
     // -----鼠标经过时展开-----
-    // 记录窗口的初始位置和大小
-    // let originalX = nw.Window.get().x;
-    // let originalWidth = nw.Window.get().width;
+    // 获取 div 元素和窗口的初始尺寸
+    let box = document.getElementById('draggable');
+    let initialBoxWidth = box.offsetWidth;
+    let initialWindowWidth = windowWidth;
+    let expandedBoxWidth = 200;  // 根据你的 CSS 规则设置
+    // 使用变量记录是否正在变化
+    let isTransitioning = false;
 
-    // function expand() {
-    //   // 计算新的窗口位置和大小
-    //   let expandedWidth = 250;  // 更改为你想要的扩展后的宽度
-    //   let expandedX = originalX - (expandedWidth - originalWidth);
+    // 当鼠标进入 div 时，扩大窗口并向左移动
+    box.addEventListener('mouseover', function(e) {
+      // 如果已经在变化，直接返回
+      if (isTransitioning) return;
 
-    //   // 改变窗口的位置和大小
-    //   nw.Window.get().moveTo(expandedX, nw.Window.get().y);
-    //   nw.Window.get().resizeTo(expandedWidth, nw.Window.get().height);
-    // }
+      isTransitioning = true;
 
-    // function collapse() {
-    //   // 恢复窗口的位置和大小
-    //   nw.Window.get().moveTo(originalX, nw.Window.get().y);
-    //   nw.Window.get().resizeTo(originalWidth, nw.Window.get().height);
-    // }
+      windowWidth = initialWindowWidth + (expandedBoxWidth - initialBoxWidth);
+      targetX = screenWidth - windowWidth;
+      win.resizeTo(windowWidth, windowHeight);
+      win.moveTo(targetX, targetY);
+
+      // 变化完成后，设置 isTransitioning 为 false
+      isTransitioning = false;
+
+      console.log('jinruYado')
+    });
+
+    // 当鼠标离开 div 时，恢复窗口的大小和位置
+
+    box.addEventListener('mouseleave', function(e) {
+      console.log('leaveYado')
+    })
+
+    // box.addEventListener('transitionend', function(e) {
+    //   if (!isTransitioning) return;
+      
+    //   windowWidth = initialWindowWidth;
+    //   targetX = screenWidth - windowWidth;
+    //   win.resizeTo(windowWidth, windowHeight);
+    //   win.moveTo(targetX, targetY);
+
+    //   // 变化完成后，设置 isTransitioning 为 false
+    //   isTransitioning = false;
+
+    //   console.log('likaiYado');
+    // });
+
   </script>
   </body>
 </html>
