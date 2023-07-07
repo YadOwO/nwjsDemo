@@ -23,7 +23,7 @@
     .buttons {
       margin-left: 5px;
       background-color: #e7e7e7;
-      height: 40px;
+      height: 25px;
       width: 190px;
       margin-top: 25px;
       display: flex;
@@ -49,11 +49,11 @@
     <img src="./img/doctor.png" alt="" class="doctorImg">
     <!-- <span>doctor</span> -->
     <div class="buttons" id="buttons">
-      <button>1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>4</button>
-      <button>5</button>
+      <button onclick="buttonClicked(1)">1</button>
+      <button onclick="buttonClicked(2)">2</button>
+      <button onclick="buttonClicked(3)">3</button>
+      <button onclick="buttonClicked(4)">4</button>
+      <button onclick="buttonClicked(5)">5</button>
     </div>
   </div>
   <script>
@@ -125,6 +125,16 @@
     document.addEventListener('mouseup', () => {
       dragging = false;
     });
+
+
+    // -----点击按钮-----
+    function buttonClicked(number) {
+      nw.Window.open('newWindow.html', {width: 400, height: 300}, function(newWin) {
+        // 在这里，你可以操作新窗口，例如向新窗口传递数据
+        newWin.window.message = "你点击了按钮 " + number;
+      });
+    }
+
   </script>
 </body>
 </html>
